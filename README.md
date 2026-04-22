@@ -11,7 +11,7 @@
 
   #Добавление задачи
 Пользователь может добавлять собственные задачи. Для этого ему необходимо написать задачу и выбрать ей категорию, после ычего нажать на кнопку "Добавить".
-<img width="151" height="182" alt="image" src="https://github.com/user-attachments/assets/78618f5a-7447-46da-bede-64eba43ca8f4" />
+<img width="750" height="432" alt="image" src="https://github.com/user-attachments/assets/81320f1e-c622-4335-9af0-dd81113079a4" />
 Новая задача будет сохранена в файл расширения .json.
 
   #Генерация задачи
