@@ -32,28 +32,26 @@ choose_label.pack()
 category_lb = tk.Listbox(add_frame, height=4)
 category_lb.pack()
 
-#список категорий для listbox
-category_list = ["спорт", "работа", "учёба", "отдых"]
-for category in category_list: #Помещение категорий в listbox
-    category_lb.insert(tk.END, category)
-
 #Функция добавления новой задачи
 def add_task():
     global tasks #Глобальная переменная - список задач
-    task = add_entry.get() #получение задачи
-    if task == "": #Если задача пустая выдает сообщение об ошибке и останавлиавет процесс
-        showerror(title="Ошибка", message="Поле для добавления новой задачи пустое")
-        return 
-    category_indx = category_lb.curselection() #Получает идекс категории для дальнейшего добавления
-    if not category_indx: #Если категория не выбрана выдает сообщение об ошибке и останавливает процесс
-        showerror(title="Ошибка", message="Не выбрана категория для добавления")
-        return
-    else:        
-        category = category_lb.get(category_indx[0])
-    new_task = {"category": category, "task": task} #формирование новой задачи из категории и задачи
-    tasks.append(new_task) #добавление новой задачи в список
-    save_file(tasks) #Сохранение в файл задач
-    showinfo(title="Добавленно", message="Задача успешно добавлена")
+    try:
+        task = add_entry.get() #получение задачи
+        if task == "": #Если задача пустая выдает сообщение об ошибке и останавлиавет процесс
+            showerror(title="Ошибка", message="Поле для добавления новой задачи пустое")
+            return 
+        category_indx = category_lb.curselection() #Получает идекс категории для дальнейшего добавления
+        if not category_indx: #Если категория не выбрана выдает сообщение об ошибке и останавливает процесс
+            showerror(title="Ошибка", message="Не выбрана категория для добавления")
+            return
+        else:        
+            category = category_lb.get(category_indx[0])
+        new_task = {"category": category, "task": task} #формирование новой задачи из категории и задачи
+        tasks.append(new_task) #добавление новой задачи в список
+        save_file(tasks) #Сохранение в файл задач
+        showinfo(title="Добавленно", message="Задача успешно добавлена")
+    except ValueError:
+        showerror(title="Ошибка", message="Ошибка работы с данными)
         
         
 #Кнопка добавления
@@ -77,14 +75,18 @@ def generate_task():
         for task in tasks: #Фильтрация по категории
             if task["category"] == category_filter:
                 filtered_tasks.append(task)
-        chosen_task = random.choice(filtered_tasks) #Выбор задачи из отфильтрованого списка
+        if filtered_tasks == []: #Проверка на наличие задч в выбранной категории
+            showerror(title="Ошибка", message="Задач в выбранной категории не существует") 
+            return
+        else:
+            chosen_task = random.choice(filtered_tasks) #Выбор задачи из отфильтрованого списка
     #Если фильтрация не выбрана
     else:
         chosen_task = random.choice(tasks) #Выбор задачи из всего списка
         
-    result_label.config(text=f"{chosen_task["category"]}: {chosen_task["task"]}") #Вывод результата в нужный label
-    add_history_label = tk.Label(history_frame, text=f"{chosen_task["category"]}: {chosen_task["task"]}").pack() #Создание новго lable для показа истории генераций
-    history.append(f"{chosen_task["category"]}: {chosen_task["task"]}") #Добавление в список для сохранения в файл
+    result_label.config(text=f"{chosen_task['category']}: {chosen_task['task']}") #Вывод результата в нужный label
+    add_history_label = tk.Label(history_frame, text=f"{chosen_task['category']}: {chosen_task['task']}").pack() #Создание новго lable для показа истории генераций
+    history.append(f"{chosen_task['category']}: {chosen_task['task']}") #Добавление в список для сохранения в файл
     save_history(history) #Сохранение истории
 
 #кнопка для вывода результата
@@ -142,6 +144,12 @@ if tasks == []: #Приравнивание пустого списка зада
 history = load_history() #Список для сохранения истории
 for part in history: #Загрузка истории из файла на старте
     add_history_label = tk.Label(history_frame, text=part).pack()
+
+
+#список категорий для listbox
+category_list = ["спорт", "работа", "учёба", "отдых"]
+for category in category_list: #Помещение категорий в listbox
+    category_lb.insert(tk.END, category)
 
 #Запуск программы
 window.mainloop()
